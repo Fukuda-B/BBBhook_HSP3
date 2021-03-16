@@ -5,7 +5,7 @@
 
 #const FR 60
 #const scrnX 400
-#const scrnY 300
+#const scrnY 340
 #define SCRN_TIT "BBBhook"
 #define WS_EX_LAYERED $80000
 #define LWA_COLORKEY 1
@@ -32,48 +32,41 @@ return
 	LoadIcon 0, 32512: SetClassLong hwnd, -14, stat
 	title SCRN_TIT :goto *s
 
-#module reqSet
-;#defcfunc p_req str 
-	#modinit // network init
-		netinit
-		if stat : dialog "netinit Error"
-		
-		neturl webhookUrl
-		prm = "username="+name+"content"+text
-		netrequest_post "",prm
-	return
+*s // start
+	font "MSGOHIC", 20, 20
+	pos 50, 15: sdim webhookUrl, 1024*10
+	input webhookUrl, 300, 20 : objprm 0, ""
+	pos 50, 45: sdim name, 128
+	input name, 300, 20
+	pos 50, 80: sdim text, 2000
+	mesbox text, 300, 200, 3
+	pos 100, 290: objsize 200, 40
+	button gosub "Submit", *main
+	stop
 
-	#modcfunc local res_wait
-		repeat
-		netexec res
-		if res > 0 : goto *done
-		if res < 0 : goto *bad_res
-		await 1000/FR
-		loop
+*main
+	netinit
+	if stat : dialog "netinit Error"
+
+	if strlen(webhookUrl) <= 0: stop
+	neturl webhookUrl
+	prm = '{"username":"'+name+'","content":"'+text+'"}'
+	netheader "Content-Type:application/json"
+	netrequest_post "&test=test",prm
+
+	repeat
+	netexec res
+	if res > 0 : goto *done
+	if res < 0 : goto *bad_res
+	await 1000/FR
+	loop
 
 *done // done get response
-	mes "ok"
-	netgetv buf
+	objprm 2, ""
+	netgetv status
+	objprm 2, status
 
 *bad_res // bad response
 	neterror status
 	mes status
 	stop
-#global
-
-*s // start
-	font "MSGOHIC", 20, 20
-	pos 50, 15: sdim webhookUrl, 128
-	input wenhookUrl, 300, 20 : objprm 0, ""
-	pos 50, 55: sdim name, 128
-	input name, 300, 20
-	pos 50, 80: sdim text, 2000
-	mesbox text, 300, 200, 3
-	button gosub "Submit", *main
-;	newmod req reqSet
-	new@req reqSet
-	stop
-
-*main
-	mes res_wait(req)
-	return
