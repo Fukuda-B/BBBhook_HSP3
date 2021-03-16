@@ -1,6 +1,17 @@
-#include "hspinet.as"
-#include "user32.as"
+; Req: Windows 2000/XP or newer
 #uselib "kernel32.dll"
+#include "user32.as"
+#include "hspinet.as"
+
+#const FR 60
+#const scrnX 400
+#const scrnY 300
+#define SCRN_TIT "BBBhook"
+#define WS_EX_LAYERED $80000
+#define LWA_COLORKEY 1
+#define ULW_ALPHA 2
+#define WN_ALPHA 80
+;#func MessageBox "MessageBoxA" int, str, str, int // user32.dll
 
 #module
 #deffunc scrnSize var res
@@ -8,40 +19,61 @@
 return
 #global
 
-#const FR 60
-#const scrnX 400
-#const scrnY 600
-#define scrnTit "BBBhook_HSP3"
-;#func MessageBox "MessageBoxA" int, str, str, int // user32.dll
-
-*s // start
+*f // create window
 	scrnSize scrnMx
-	screen 0, scrnMx(0), scrnMx(1)
-	GetWindowLong hwnd, -16
-	SetWindowLong hwnd, -16, stat | $10000 | $40000
-	width scrnX, scrnY
-	title scrnTit
-stop
-*init // network init
-	netinit
-	if stat : dialog "netinit Error"
-	
-	neturl webhookUrl
-	prm = "username="+name+"content"+text
-	netrequest_post "\",prm
+	screen 0, scrnX, scrnY
+;	screen 0, scrnMx(0), scrnMx(1)
+;	width scrnX, scrnY
+;	GetWindowLong hwnd, -16
+;	SetWindowLong hwnd, -16, stat | $10000 | $40000
+	GetWindowLong hwnd, -20
+	SetWindowLong hwnd, -20, stat | WS_EX_LAYERED
+	SetLayeredWindowAttributes hwnd, 0, WN_ALPHA*255/100, ULW_ALPHA
+	LoadIcon 0, 32512: SetClassLong hwnd, -14, stat
+	title SCRN_TIT :goto *s
 
-*main // wait response
-	netexec res
-	if res > 0 : goto *done
-	if res < 0 : goto *bad_res
-	await 1000/FR
+#module reqSet
+;#defcfunc p_req str 
+	#modinit // network init
+		netinit
+		if stat : dialog "netinit Error"
+		
+		neturl webhookUrl
+		prm = "username="+name+"content"+text
+		netrequest_post "",prm
+	return
+
+	#modcfunc local res_wait
+		repeat
+		netexec res
+		if res > 0 : goto *done
+		if res < 0 : goto *bad_res
+		await 1000/FR
+		loop
 
 *done // done get response
 	mes "ok"
 	netgetv buf
-	
 
-*bad_res //
+*bad_res // bad response
 	neterror status
 	mes status
 	stop
+#global
+
+*s // start
+	font "MSGOHIC", 20, 20
+	pos 50, 15: sdim webhookUrl, 128
+	input wenhookUrl, 300, 20 : objprm 0, ""
+	pos 50, 55: sdim name, 128
+	input name, 300, 20
+	pos 50, 80: sdim text, 2000
+	mesbox text, 300, 200, 3
+	button gosub "Submit", *main
+;	newmod req reqSet
+	new@req reqSet
+	stop
+
+*main
+	mes res_wait(req)
+	return
