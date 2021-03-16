@@ -1,0 +1,47 @@
+#include "hspinet.as"
+#include "user32.as"
+#uselib "kernel32.dll"
+
+#module
+#deffunc scrnSize var res
+	res = ginfo(20), ginfo(21)
+return
+#global
+
+#const FR 60
+#const scrnX 400
+#const scrnY 600
+#define scrnTit "BBBhook_HSP3"
+;#func MessageBox "MessageBoxA" int, str, str, int // user32.dll
+
+*s // start
+	scrnSize scrnMx
+	screen 0, scrnMx(0), scrnMx(1)
+	GetWindowLong hwnd, -16
+	SetWindowLong hwnd, -16, stat | $10000 | $40000
+	width scrnX, scrnY
+	title scrnTit
+stop
+*init // network init
+	netinit
+	if stat : dialog "netinit Error"
+	
+	neturl webhookUrl
+	prm = "username="+name+"content"+text
+	netrequest_post "\",prm
+
+*main // wait response
+	netexec res
+	if res > 0 : goto *done
+	if res < 0 : goto *bad_res
+	await 1000/FR
+
+*done // done get response
+	mes "ok"
+	netgetv buf
+	
+
+*bad_res //
+	neterror status
+	mes status
+	stop
