@@ -1,6 +1,7 @@
-### BBBhook_HSP3
--------------------------------
+### BBBhook_HSP3  
 HSP3でDiscord Webhookを使ってメッセージを送信しよう (hsp3.6β5.)
+  
+***
   
 #### 動作  
 Discord Webhook を使ってDiscordへメッセージを送信できます。
