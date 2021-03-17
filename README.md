@@ -1,7 +1,6 @@
 ### BBBhook_HSP3
 -------------------------------
 HSP3でDiscord Webhookを使ってメッセージを送信しよう (currently using hsp3.6β5.)
-HSP3は型が独特なので、[Basic_of_HSP.hsp](https://github.com/Fukuda-B/BBBhook_HSP3/blob/master/Basic_of_HSP.hsp) を追加しました
   
 #### 動作
 Discord Webhook を使ってDiscordへメッセージを送信できます。
