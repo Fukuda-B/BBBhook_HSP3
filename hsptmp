@@ -45,14 +45,22 @@ return
 	stop
 
 *main
+	split webhookUrl,"/",urlSplit
+	ct = stat : urlUp = "": urlDn = ""
+	repeat ct-1
+		urlUp + urlSplit(cnt) + "/"
+	loop
+	urlDn = urlSplit(ct-1)
+
 	netinit
 	if stat : dialog "netinit Error"
-
 	if strlen(webhookUrl) <= 0: stop
-	neturl webhookUrl
-	prm = '{"username":"'+name+'","content":"'+text+'"}'
+	neturl str(urlUp)
+;	prm = "username="+name+"&content="+text
+	prm = "{\"username\":\""+name+"\",\"content\":\""+text+"\"}"
+	prm = "{\"username\":\"B\",\"content\":\"test\"}"
 	netheader "Content-Type:application/json"
-	netrequest_post "&test=test",prm
+	netrequest_post urlDn,prm
 
 	repeat
 	netexec res

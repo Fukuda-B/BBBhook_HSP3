@@ -1,0 +1,22 @@
+;HSP3では、先頭にある数が優先される
+
+; int + int = int
+mes 10 + 11 // 21
+
+; int + str = int
+mes 10 + "11"  // 21
+
+; str + int = str
+mes "10" + 11  // 1011
+
+; ASCII番号(int)
+mes '1011' // 49
+
+; int + ASCII番号(int) = int
+mes 10 + '11'  // 59
+
+; ASCII番号 + int = ASCII番号(int)
+mes '10' + 11  // 60
+
+; ASCII番号(int) + ASCII番号(int) = ASCII番号(int)
+mes '10' + '11'// 98
