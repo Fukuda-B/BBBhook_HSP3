@@ -8,6 +8,7 @@ Discord Webhook を使ってDiscordへメッセージを送信します。
 ウィンドウは半透明です。  
   
 動作は以下の通り  
+上にWebhookURL、真ん中にユーザ名、下に内容を入力してボタンを押すと送信される
   
 ![image](https://user-images.githubusercontent.com/60131202/111424197-c0f0fc80-8734-11eb-99cd-6758bb052b8d.png)
 
