@@ -14,6 +14,8 @@ Discord Webhook を使ってDiscordへメッセージを送信できます。
 #### 今後の課題
 + 英数字の入力にしか対応していないため、日本語等が含まれる文字列は送信できない  
 + 使いにくい
++ やる気が出ない
++ Bが足りない
 
 #### その他
 HSP3は型が独特なので、[Basic_of_HSP.hsp](https://github.com/Fukuda-B/BBBhook_HSP3/blob/master/Basic_of_HSP.hsp) を追加しました
