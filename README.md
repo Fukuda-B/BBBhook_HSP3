@@ -4,7 +4,7 @@ HSP3でDiscord Webhookを使ってメッセージを送信しよう (hsp3.6β5.)
 ***
   
 #### 動作  
-Discord Webhook を使ってDiscordへメッセージを送信できます。
+Discord Webhook を使ってDiscordへメッセージを送信します。
 ウィンドウは半透明です。  
   
 動作は以下の通り  
