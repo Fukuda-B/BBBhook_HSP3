@@ -45,6 +45,9 @@ return
 	stop
 
 *main
+;	nkfcnv text, text, "wS" : urlencode text, text
+;	nkfcnv name, name, "wS" : urlencode name, name
+	if strlen(webhookUrl) <= 0 || strlen(text) <= 0: stop
 	split webhookUrl,"/",urlSplit
 	ct = stat : urlUp = "": urlDn = ""
 	repeat ct-1
@@ -54,11 +57,8 @@ return
 
 	netinit
 	if stat : dialog "netinit Error"
-	if strlen(webhookUrl) <= 0: stop
 	neturl str(urlUp)
-;	prm = "username="+name+"&content="+text
 	prm = "{\"username\":\""+name+"\",\"content\":\""+text+"\"}"
-	prm = "{\"username\":\"B\",\"content\":\"test\"}"
 	netheader "Content-Type:application/json"
 	netrequest_post urlDn,prm
 
@@ -72,7 +72,7 @@ return
 *done // done get response
 	objprm 2, ""
 	netgetv status
-	objprm 2, status
+;	objprm 2, status
 
 *bad_res // bad response
 	neterror status
